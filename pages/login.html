@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EmoAI — Sign in</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100dvh;
+            padding: 20px;
+            background: var(--bg);
+        }
+
+        .auth-card {
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .auth-logo a {
+            font-family: 'Lora', serif;
+            font-style: italic;
+            font-size: 28px;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .auth-logo a strong {
+            font-style: normal;
+            color: var(--accent);
+        }
+
+        .auth-logo p {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: var(--muted);
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: all 0.15s;
+        }
+
+        .tab-btn.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 11px;
+            font-size: 14px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 16px;
+            line-height: 1.6;
+        }
+
+        .error-msg {
+            font-size: 13px;
+            color: var(--danger);
+            text-align: center;
+            display: none;
+            padding: 8px 12px;
+            background: #FDF0F0;
+            border-radius: var(--radius-sm);
+        }
+
+        .success-msg {
+            font-size: 13px;
+            color: var(--success);
+            text-align: center;
+            display: none;
+            padding: 8px 12px;
+            background: #F0FBF7;
+            border-radius: var(--radius-sm);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-card card">
+        <div class="auth-logo">
+            <a href="#">Emo<strong>AI</strong></a>
+            <p>Your private emotional companion</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tab-login" onclick="showTab('login')">Sign in</button>
+            <button class="tab-btn" id="tab-signup" onclick="showTab('signup')">Create account</button>
+        </div>
+
+        <div id="error-msg" class="error-msg"></div>
+        <div id="success-msg" class="success-msg"></div>
+
+        <!-- Login form -->
+        <form id="login-form" class="auth-form" onsubmit="return false">
+            <div class="form-group">
+                <label class="form-label" for="login-email">Email</label>
+                <input class="form-input" id="login-email" type="email" placeholder="you@example.com"
+                    autocomplete="email" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="login-password">Password</label>
+                <input class="form-input" id="login-password" type="password" placeholder="••••••••"
+                    autocomplete="current-password" required />
+            </div>
+            <button class="btn btn-primary submit-btn" id="login-btn" onclick="doLogin()">Sign in</button>
+        </form>
+
+        <!-- Signup form (hidden) -->
+        <form id="signup-form" class="auth-form" style="display:none" onsubmit="return false">
+            <div class="form-group">
+                <label class="form-label" for="signup-email">Email</label>
+                <input class="form-input" id="signup-email" type="email" placeholder="you@example.com"
+                    autocomplete="email" required />
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="signup-password">Password <span
+                        style="font-weight:400;color:var(--hint)">(min 6 characters)</span></label>
+                <input class="form-input" id="signup-password" type="password" placeholder="Choose a password"
+                    autocomplete="new-password" required />
+            </div>
+            <button class="btn btn-primary submit-btn" id="signup-btn" onclick="doSignup()">Create account</button>
+        </form>
+
+        <div class="auth-footer">
+            EmoAI is not a substitute for professional mental health support.<br>
+            In a crisis, call <strong>iCall: 9152987821</strong>
+        </div>
+    </div>
+
+    <script type="module">
+        import { apiLogin, apiSignup } from "../js/api.js";
+        import { saveSession, isLoggedIn } from "../js/auth.js";
+
+        if (isLoggedIn()) window.location.href = "../index.html";
+
+        function showError(msg) { const el = document.getElementById("error-msg"); el.textContent = msg; el.style.display = "block"; document.getElementById("success-msg").style.display = "none"; }
+        function showSuccess(msg) { const el = document.getElementById("success-msg"); el.textContent = msg; el.style.display = "block"; document.getElementById("error-msg").style.display = "none"; }
+        function clearMessages() { document.getElementById("error-msg").style.display = "none"; document.getElementById("success-msg").style.display = "none"; }
+
+        window.showTab = (tab) => {
+            document.getElementById("login-form").style.display = tab === "login" ? "flex" : "none";
+            document.getElementById("signup-form").style.display = tab === "signup" ? "flex" : "none";
+            document.getElementById("tab-login").classList.toggle("active", tab === "login");
+            document.getElementById("tab-signup").classList.toggle("active", tab === "signup");
+            clearMessages();
+        };
+
+        window.doLogin = async () => {
+            clearMessages();
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value;
+            if (!email || !password) return showError("Please fill in both fields.");
+            const btn = document.getElementById("login-btn");
+            btn.disabled = true; btn.textContent = "Signing in…";
+            try {
+                console.log("Calling API...");
+                const data = await apiLogin(email, password);
+                console.log(data);
+                saveSession(data.access_token, {
+                    id: data.user_id,
+                    email: data.email
+                })
+                window.location.href = "../index.html";
+            } catch (err) {
+                console.error(err);
+                showError(err.message || "Login failed. Check your credentials.");
+            } finally {
+                btn.disabled = false; btn.textContent = "Sign in";
+            }
+        };
+
+        window.doSignup = async () => {
+            clearMessages();
+            const email = document.getElementById("signup-email").value.trim();
+            const password = document.getElementById("signup-password").value;
+            if (!email || !password) return showError("Please fill in both fields.");
+            if (password.length < 6) return showError("Password must be at least 6 characters.");
+            const btn = document.getElementById("signup-btn");
+            btn.disabled = true; btn.textContent = "Creating account…";
+            try {
+                const data = await apiSignup(email, password);
+                showSuccess(data.message || "Account created! Check your email, then sign in.");
+                window.showTab("login");
+            } catch (err) {
+                showError(err.message || "Signup failed. Try a different email.");
+            } finally {
+                btn.disabled = false; btn.textContent = "Create account";
+            }
+        };
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key !== "Enter") return;
+            const active = document.getElementById("login-form").style.display !== "none" ? "login" : "signup";
+            active === "login" ? window.doLogin() : window.doSignup();
+        });
+    </script>
+</body>
+
+</html>

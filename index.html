@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EmoAI — Chat</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Lora:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+</head>
+
+<body class="app-shell">
+
+    <header class="header">
+        <a href="index.html" class="logo">Emo<strong>AI</strong></a>
+        <nav class="nav">
+            <a href="index.html" class="nav-link active">Chat</a>
+            <a href="pages/journal.html" class="nav-link">Journal</a>
+        </nav>
+        <div style="display:flex;gap:6px;align-items:center">
+            <span id="user-email" style="font-size:12px;color:var(--muted)"></span>
+            <button class="btn btn-ghost btn-sm" id="logout-btn">Sign out</button>
+        </div>
+    </header>
+
+    <div class="disclaimer">
+        ⚠️ EmoAI is not a substitute for professional mental health support.
+        In a crisis, call <a href="tel:9152987821">iCall: 9152987821</a>
+    </div>
+
+    <div class="feedback-bar">
+        🌱 Trying EmoAI? We'd love your feedback —
+        <a href="https://forms.gle/REPLACE_WITH_YOUR_GOOGLE_FORM_LINK" target="_blank" rel="noopener">
+            take 1 min to share what you think
+        </a>
+    </div>
+
+    <div class="mood-bar">
+        <span class="mood-label">How are you right now?</span>
+        <div class="mood-emojis">
+            <button class="mood-btn" data-score="1" data-emoji="😔" title="Very low">😔</button>
+            <button class="mood-btn" data-score="2" data-emoji="😟" title="Low">😟</button>
+            <button class="mood-btn" data-score="3" data-emoji="😐" title="Okay">😐</button>
+            <button class="mood-btn" data-score="4" data-emoji="🙂" title="Good">🙂</button>
+            <button class="mood-btn" data-score="5" data-emoji="😄" title="Great">😄</button>
+        </div>
+        <span class="mood-saved" id="mood-saved">✓ Saved</span>
+        <div id="chart-wrap" style="display:none;margin-left:auto;width:180px;height:46px">
+            <canvas id="mood-chart"></canvas>
+        </div>
+    </div>
+
+    <div id="welcome" class="welcome">
+        <div class="welcome-icon">🌿</div>
+        <h1 class="welcome-title">How are you feeling today?</h1>
+        <p class="welcome-sub">I'm here to listen — without judgment. Just space to be heard.</p>
+        <div class="chips">
+            <div class="chip">I'm feeling overwhelmed</div>
+            <div class="chip">I need to vent about work</div>
+            <div class="chip">I've been anxious lately</div>
+            <div class="chip">I just need someone to talk to</div>
+            <div class="chip">I'm not sure how I feel</div>
+        </div>
+    </div>
+
+    <div id="messages" class="messages" style="display:none"></div>
+
+    <div class="input-area">
+        <div class="input-row">
+            <textarea id="user-input" class="input-field" rows="1" placeholder="Share what's on your mind…"
+                maxlength="2000"></textarea>
+            <button id="send-btn" class="send-btn" aria-label="Send">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+            </button>
+        </div>
+        <div class="input-hint">EmoAI is an AI · not a therapist · Crisis? iCall: 9152987821</div>
+    </div>
+
+    <script type="module" src="js/chat.js"></script>
+</body>
+
+</html>
